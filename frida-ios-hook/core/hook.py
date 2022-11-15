@@ -35,9 +35,9 @@ def dump_memory(option, process):
     try:
         util = APP_UTILS['Dump Memory']
         if option != "-h":
-            cmd = shlex.split("python3 " + util + ' ' + "-u" + ' ' + option + ' ' + '"' + process + '"')
+            cmd = shlex.split(f"python3 {util} -u {option} " + '"' + process + '"')
         else:
-            cmd = shlex.split("python3 " + util + ' ' + option)
+            cmd = shlex.split(f"python3 {util} {option}")
         subprocess.call(cmd)
         sys.exit(0)
     except Exception as e:
@@ -46,13 +46,12 @@ def dump_memory(option, process):
 def hexbyte_scan(mode, file, option):
     try:
         util = APP_UTILS['HexByte Scanner']
-        if option != "-h":
-            if mode == "":
-                cmd = shlex.split("./"+util + ' ' + option + ' ' + file)
-            else:
-                cmd = shlex.split("./"+util + ' ' + mode + ' ' + file + ' ' + option)
+        if option == "-h":
+            cmd = shlex.split(f"./{util}")
+        elif mode == "":
+            cmd = shlex.split(f"./{util} {option} {file}")
         else:
-            cmd = shlex.split("./"+util)
+            cmd = shlex.split(f"./{util} {mode} {file} {option}")
         subprocess.call(cmd)
         sys.exit(0)
     except Exception as e:

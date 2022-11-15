@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 def deleteLog():
     try:
         pwd = os.getcwd()
-        path = pwd + '/errors.log'
+        path = f'{pwd}/errors.log'
         file_stats = os.stat(path)
         if (file_stats.st_size > 1024000000): #delete errors.log if file size > 1024 MB
             os.remove(path)

@@ -81,13 +81,13 @@ class check():
                 logger.info("[*] This is the first time you are running iOSHook. We are need install some package.")
                 if sys.platform == 'darwin':
                     for name, cmd in APP_PACKAGES['darwin'].items():
-                        logger.info("[*] Install " + name)
-                        cmd = shlex.split("brew install " + cmd)
+                        logger.info(f"[*] Install {name}")
+                        cmd = shlex.split(f"brew install {cmd}")
                         subprocess.call(cmd)
                 elif sys.platform == 'linux':
                     for name, cmd in APP_PACKAGES['linux'].items():
-                        logger.info("[*] Install " + name)
-                        cmd = shlex.split("sudo apt-get install " + cmd)
+                        logger.info(f"[*] Install {name}")
+                        cmd = shlex.split(f"sudo apt-get install {cmd}")
                         subprocess.call(cmd)
                 elif sys.platform == 'win32':
                     logger.warning("[*] You are running iOSHook on Windows. Please download on https://libimobiledevice.org/#downloads and install package then set system variable.!!")

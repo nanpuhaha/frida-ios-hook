@@ -17,12 +17,10 @@ def check_version(speak=True):
         current_version = content[version_identification:version_identification + 16]
         current_version = str(current_version.strip().split('"')[3])
         my_version = GLOBLA_CONFIG['version']
-        if not current_version == my_version:
+        if current_version != my_version:
             if speak:
-                logger.info('[*] New version: {} is available'.format(current_version))
-                return False
-            else:
-                return False
+                logger.info(f'[*] New version: {current_version} is available')
+            return False
         else:
             if speak:
                 logger.info('[*] iOShook already up to date.')

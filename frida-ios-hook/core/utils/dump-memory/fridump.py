@@ -42,8 +42,7 @@ def MENU():
                         help='run strings on all dump files. Saved in output dir.')
     parser.add_argument('--max-size', type=int, help='maximum size of dump file in bytes (def: 20971520)',
                         metavar="bytes")
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 #print(logo)
@@ -55,20 +54,14 @@ APP_NAME = utils.normalize_app_name(appName=arguments.process)
 DIRECTORY = ""
 USB = arguments.usb
 NETWORK=False
-DEBUG_LEVEL = logging.INFO
 STRINGS = arguments.strings
 MAX_SIZE = 20971520
-PERMS = 'rw-'
-
 if arguments.host is not None:
   NETWORK=True
   IP=arguments.host
 
-if arguments.read_only:
-    PERMS = 'r--'
-
-if arguments.verbose:
-    DEBUG_LEVEL = logging.DEBUG
+PERMS = 'r--' if arguments.read_only else 'rw-'
+DEBUG_LEVEL = logging.DEBUG if arguments.verbose else logging.INFO
 logging.basicConfig(format='%(levelname)s:%(message)s', level=DEBUG_LEVEL)
 
 
@@ -82,7 +75,7 @@ try:
     else:
         session = frida.attach(APP_NAME)
 except Exception as e:
-    print(str(e))
+    print(e)
     sys.exit()
 
 
@@ -90,15 +83,15 @@ except Exception as e:
 if arguments.out is not None:
     DIRECTORY = arguments.out
     if os.path.isdir(DIRECTORY):
-        print("Output directory is set to: " + DIRECTORY)
+        print(f"Output directory is set to: {DIRECTORY}")
     else:
         print("The selected output directory does not exist!")
         sys.exit(1)
 
 else:
-    print("Current Directory: " + str(os.getcwd()))
+    print(f"Current Directory: {str(os.getcwd())}")
     DIRECTORY = os.path.join(os.getcwd(), "memory-dump")
-    print("Output directory is set to: " + DIRECTORY)
+    print(f"Output directory is set to: {DIRECTORY}")
     if not os.path.exists(DIRECTORY):
         print("Creating directory...")
         os.makedirs(DIRECTORY)

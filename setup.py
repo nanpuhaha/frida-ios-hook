@@ -11,9 +11,11 @@ def _package_files(directory: str, suffix: str) -> list:
     paths = []
 
     for (path, directories, filenames) in os.walk(directory):
-        for filename in filenames:
-            if filename.endswith(suffix):
-                paths.append(os.path.join('..', path, filename))
+        paths.extend(
+            os.path.join('..', path, filename)
+            for filename in filenames
+            if filename.endswith(suffix)
+        )
 
     return paths
 

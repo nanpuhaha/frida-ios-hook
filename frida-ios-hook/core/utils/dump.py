@@ -55,7 +55,7 @@ def get_usb_iphone():
     device = None
     while device is None:
         devices = [dev for dev in device_manager.enumerate_devices() if dev.type == Type]
-        if len(devices) == 0:
+        if not devices:
             print('Waiting for USB device...')
             changed.wait()
         else:
@@ -67,9 +67,9 @@ def get_usb_iphone():
 
 
 def generate_ipa(path, display_name):
-    ipa_filename = display_name + '.ipa'
+    ipa_filename = f'{display_name}.ipa'
 
-    logger.info('Generating "{}"'.format(ipa_filename))
+    logger.info(f'Generating "{ipa_filename}"')
     try:
         app_name = file_dict['app']
 
@@ -79,7 +79,7 @@ def generate_ipa(path, display_name):
             if key != 'app':
                 shutil.move(from_dir, to_dir)
 
-        target_dir = './' + PAYLOAD_DIR
+        target_dir = f'./{PAYLOAD_DIR}'
         zip_args = ('zip', '-qr', os.path.join(os.getcwd(), ipa_filename), target_dir)
         subprocess.check_call(zip_args, cwd=TEMP_DIR)
         shutil.rmtree(PAYLOAD_PATH)
@@ -104,7 +104,7 @@ def on_message(message, data):
             dump_path = payload['dump']
 
             scp_from = dump_path
-            scp_to = PAYLOAD_PATH + '/'
+            scp_to = f'{PAYLOAD_PATH}/'
 
             with SCPClient(ssh.get_transport(), progress = progress, socket_timeout = 60) as scp:
                 scp.get(scp_from, scp_to)
@@ -123,7 +123,7 @@ def on_message(message, data):
             app_path = payload['app']
 
             scp_from = app_path
-            scp_to = PAYLOAD_PATH + '/'
+            scp_to = f'{PAYLOAD_PATH}/'
             with SCPClient(ssh.get_transport(), progress = progress, socket_timeout = 60) as scp:
                 scp.get(scp_from, scp_to, recursive=True)
 
@@ -160,7 +160,7 @@ def get_applications(device):
     try:
         applications = device.enumerate_applications()
     except Exception as e:
-        sys.exit('Failed to enumerate applications: %s' % e)
+        sys.exit(f'Failed to enumerate applications: {e}')
 
     return applications
 
@@ -168,7 +168,7 @@ def get_applications(device):
 def load_js_file(session, filename):
     source = ''
     with codecs.open(filename, 'r', 'utf-8') as f:
-        source = source + f.read()
+        source += f.read()
     script = session.create_script(source)
     script.on('message', on_message)
     script.load()
@@ -188,14 +188,14 @@ def create_dir(path):
 
 
 def open_target_app(device, name_or_bundleid):
-    logger.info('Start the target app {}'.format(name_or_bundleid))
+    logger.info(f'Start the target app {name_or_bundleid}')
 
     pid = ''
     session = None
     display_name = ''
     bundle_identifier = ''
     for application in get_applications(device):
-        if name_or_bundleid == application.identifier or name_or_bundleid == application.name:
+        if name_or_bundleid in [application.identifier, application.name]:
             pid = application.pid
             display_name = application.name
             bundle_identifier = application.identifier
@@ -214,7 +214,7 @@ def open_target_app(device, name_or_bundleid):
 
 
 def start_dump(session, ipa_name):
-    logger.info('Dumping {} to {}'.format(display_name, TEMP_DIR))
+    logger.info(f'Dumping {display_name} to {TEMP_DIR}')
 
     script = load_js_file(session, DUMP_JS)
     script.post('dump')
@@ -267,7 +267,7 @@ if __name__ == '__main__':
             print(e) 
             exit_code = 1
         except Exception as e:
-            print('*** Caught exception: %s: %s' % (e.__class__, e))
+            print(f'*** Caught exception: {e.__class__}: {e}')
             traceback.print_exc()
             exit_code = 1
 

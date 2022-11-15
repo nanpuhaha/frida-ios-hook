@@ -22,8 +22,8 @@ class iOSHook_CLI(Cmd):
 
         #DO COMMAND
         def do_version(self, arg):
-            logger.info('[*] iOSHook version: ' + APP_VERSION)
-            logger.info('[*] iOSHook CLI version: ' + APP_CLI_VERSION)
+            logger.info(f'[*] iOSHook version: {APP_VERSION}')
+            logger.info(f'[*] iOSHook CLI version: {APP_CLI_VERSION}')
 
         def do_listdevices(self, arg):
             logger.info('[*] List All Devices: ')
@@ -40,8 +40,8 @@ class iOSHook_CLI(Cmd):
             if os.path.isfile(method):
                 logger.info('[*] List Info of Apps on Itunes: ')
                 process = 'itunesstored'
-                os.system('frida -U -n '+ process + ' -l ' + method)
-                #sys.stdin.read()
+                os.system(f'frida -U -n {process} -l {method}')
+                    #sys.stdin.read()
             else:
                 logger.error('[?] Script not found!')
 
@@ -51,7 +51,7 @@ class iOSHook_CLI(Cmd):
                 logger.info('[*] List All Scripts: ')
                 for file_name in os.listdir(path):
                     if fnmatch.fnmatch(file_name, '*.js'):
-                        print('[*] ' + file_name)
+                        print(f'[*] {file_name}')
             else:
                 logger.error('[?] Path frida-script not exists!')
 
@@ -65,7 +65,7 @@ class iOSHook_CLI(Cmd):
             SSH_USER = APP_SSH['user']
             SSH_IP = str(APP_SSH['ip'])
             SSH_PORT = str(APP_SSH['port'])
-            cmd = shlex.split("ssh " + SSH_USER + "@" + SSH_IP + " -p " + SSH_PORT)
+            cmd = shlex.split(f"ssh {SSH_USER}@{SSH_IP} -p {SSH_PORT}")
             subprocess.call(cmd)
 
         def do_exit(self, arg):
